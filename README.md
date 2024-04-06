@@ -15,6 +15,8 @@ En caso de ser necesario, dentro de la carpeta KiCad, se encuentran los proyecto
 ## Errores y sugerencias
 En caso de que se encuentren errores de contenido y/o cualquier otro problema relacionado a las sesiones, por favor añadirlo como una Issue al repositorio, de esta manera se queda registro de los cambios realizados historicamente para futuras referencias en un único lugar.
 
+## Sobre cambios
+Se permiten hacer cambios al repositorio mediante pull request en ramas alternas
 
 ---
 *Trabajo realizado por Benjamin Espinoza y Gaspas Fábrega para el programa de Ciencia y Tecnología de la Fundación Mustakis*
