@@ -17,4 +17,4 @@ En caso de que se encuentren errores de contenido y/o cualquier otro problema re
 
 
 ---
-*Trabajo realizado por Benjamin Espinoza y Gaspas Fábrega para el programa de Ciencia y Tecnología de la Fundación Mustakis*
+*Trabajo realizado por Benjamin Espinoza y Gaspas Fábrega para el programa de Ciencia y Tecnología de la Fundación Mustakis, 2024*
