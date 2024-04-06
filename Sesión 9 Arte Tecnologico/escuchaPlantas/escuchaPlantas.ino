@@ -8,9 +8,6 @@
   MIDIsprout.com
   -------------*/
 #include <MIDIUSB.h>
-#include <EEPROMex.h> //store and read variables to nonvolitle memory
-#include <Bounce2.h> //https://github.com/thomasfredericks/Bounce-Arduino-Wiring
-#include <LEDFader.h> //manage LEDs without delay() jgillick/arduino-LEDFader https://github.com/jgillick/arduino-LEDFader.git
 int maxBrightness = 190;
 
 //******************************
@@ -31,7 +28,6 @@ int root = 0; //initialize for root, pitch shifting
 
 const byte interruptPin = INT0; //galvanometer input
 const byte knobPin = A0; //knob analog input
-Bounce button = Bounce(); //debounce button using Bounce2
 const byte buttonPin = A1; //tact button input
 int menus = 5; //number of main menus
 int mode = 0; //0 = Threshold, 1 = Scale, 2 = Brightness
