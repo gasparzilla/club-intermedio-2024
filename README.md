@@ -4,6 +4,7 @@ Este es el repositorio del club de robótica de nivelación para el primer semes
 ## Sesiones
 - Las presentaciones PPT por sesión se pueden encontrar en el siguiente link: [Presentaciones](https://drive.google.com/drive/folders/1Q9-XKyEnKL0MnVXYtlh8kp2lwUHTAggA?usp=drive_link).
 - Los tiempos sugeridos por sesión se pueden encontrar en el siguiente link: [Tiempos](https://docs.google.com/spreadsheets/d/1nqdYl0ClQ_0Gk07j1FVFSghQwln12yA571QY8IFsEMs/edit?usp=sharing)
+- Videos útiles complementarios a las sesiones se pueden encontrar en el siguiente link: [Videos](https://docs.google.com/document/d/1KKutP_OMOU2o7BTJ72E6Tdv1sluavG1waSLBUKC-ohQ/edit?usp=sharing)
 
 ## Solucionarios
 Los solucionarios se encuentran dentro de este repositorio ordenados por sesión.

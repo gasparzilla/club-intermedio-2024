@@ -1,5 +1,4 @@
-int a, b, c;
-float promedio;
+float promedio, a, b, c;
 bool es_valido;
 void setup() {
   //Se inicializa la comunicación serial
