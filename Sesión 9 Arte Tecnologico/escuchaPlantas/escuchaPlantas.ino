@@ -80,11 +80,6 @@ MIDImessage controlMessage; //manage MIDImessage data for Control Message (CV ou
 
 void setup()
 {
-  pinMode(knobPin, INPUT);
-  pinMode(buttonPin, INPUT_PULLUP);
-  button.attach(buttonPin);
-  button.interval(5);
-
   randomSeed(analogRead(0)); //seed for QY8 4 channel mode
   //Serial.begin(31250);  //initialize at MIDI rate
   // Serial.begin(57600); //for debugging
