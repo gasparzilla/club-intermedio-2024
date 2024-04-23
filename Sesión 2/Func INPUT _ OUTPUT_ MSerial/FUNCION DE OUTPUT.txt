@@ -1,0 +1,14 @@
+FUNCION DE OUTPUT / SALIDA PARA USUARIO
+
+void printOutput(const String& message) {
+  Serial.println(message);
+}
+
+//Uso esta funcion en vez de Serial.println por un tema netamente de uso estetico de input , output
+para no incomodar a los estudiantes
+
+ej:
+
+String nombre = "persona";
+printOutput("Hola " + nombre);
+

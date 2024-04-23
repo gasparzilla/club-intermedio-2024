@@ -1,0 +1,21 @@
+FUNCION DE INPUT / ENTRADA USUARIO
+
+String readInput() {  
+  String input = "";
+  while (Serial.available() == 0) {
+    ; // Esperar disponibilidad de datos
+  }
+  input = Serial.readStringUntil('\n');
+  return input;
+}
+
+
+// La uso anexada a una variable de tipo String
+ej:
+
+String nombre = readInput();
+
+//Tambien se puede usar para numeros de tipo int 
+ej:
+
+int perimetro = readInput().toInt;

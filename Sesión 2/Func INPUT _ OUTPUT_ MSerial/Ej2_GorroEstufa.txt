@@ -1,0 +1,55 @@
+/*
+CONTEXTO DEL EJERCICIO
+La abuela de René perdió su gorro de estufa debido a un fuerte viento durante una tormenta. 
+Para reemplazarlo, necesitamos conocer la medida en pulgadas del tubo de la estufa a leña, 
+ya que no podemos subirnos al techo para medir directamente el diámetro. 
+Por lo tanto, debemos calcular el perímetro y luego obtener el diámetro para convertirlo a pulgadas. 
+De esta manera, podremos comprar un nuevo gorro de estufa con las dimensiones exactas y asegurarnos de que encaje perfectamente.
+*/
+
+
+int perimetro;
+float diametro;
+int pulgadas;
+
+void setup() {
+  Serial.begin(9600);
+  printOutput(" Por favor, ingresa tu perimetro en cm:");
+ 
+}
+void loop() {
+  if (Serial.available() > 0) {
+    perimetro = readInput().toInt(); // Leer el nombre ingresado por el usuario
+    printOutput("tu perimetro es " + String(perimetro));
+    diametro=perimetro/3.14;
+    pulgadas=diametro/2.54;
+    printOutput("Ahora, tu diametro es " + String(diametro));
+    printOutput("El gorro del tubo que debes comprar en la ferreteria es de " + String(pulgadas) + " pulgadas");
+ 
+   
+    // Realizar cualquier otra acción o cálculo con el nombre, edad y comuna aquí
+   
+   
+   
+    // Reiniciar los valores para recibir nuevos datos
+    perimetro = 0;
+    diametro = 0;
+    pulgadas = 0;
+   
+  }
+}
+
+
+
+String readInput() {
+  String input = "";
+  while (Serial.available() == 0) {
+    ; // Esperar disponibilidad de datos
+  }
+  input = Serial.readStringUntil('\n');
+  return input;
+}
+
+void printOutput(const String& message) {
+  Serial.println(message);
+}

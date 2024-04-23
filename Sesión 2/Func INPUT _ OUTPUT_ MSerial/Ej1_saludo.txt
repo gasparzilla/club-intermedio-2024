@@ -1,0 +1,32 @@
+
+void setup()
+{
+   Serial.begin(9600);
+  printOutput(" Por favor, ingresa tu nombre:");
+}
+
+void loop()
+{
+  
+  if (Serial.available() > 0) {
+  String nombre=readInput();
+  printOutput("Hola "+nombre);
+  }
+ 
+}
+
+
+
+
+String readInput() {  
+  String input = "";
+  while (Serial.available() == 0) {
+    ; // Esperar disponibilidad de datos
+  }
+  input = Serial.readStringUntil('\n');
+  return input;
+}
+
+void printOutput(const String& message) {
+  Serial.println(message);
+}
