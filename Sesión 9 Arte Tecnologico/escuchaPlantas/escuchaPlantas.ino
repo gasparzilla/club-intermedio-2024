@@ -1,69 +1,66 @@
 /*------------
   MIDI_PsychoGalvanometer v026
-  Accepts pulse inputs from a Galvanic Conductance sensor
-  consisting of a 555 timer set as an astablemultivibrator and two electrodes.
-  Through sampling pulse widths and identifying fluctuations, MIDI note and control messages
-  are generated.  Features include Threshold, Scaling, Control Number, and Control Voltage
-  using PWM through an RC Low Pass filter.
-  MIDIsprout.com
-  -------------*/
-#include <MIDIUSB.h>
-int maxBrightness = 190;
+  Acepta pulsos de un sensor de conductividad galvanico
+  (incluir link de explicacion)
+  Este sensor consiste de un temporizador 555 configurado como un multivibrador aestable y dos electrodos
+  (incluir link de explicacion)
+  El muestreo del ancho de pulso emitido y la identificacion de sus 
+  fluctuaciones, nos permite generar notas y mensajes de control (ejercicio para el lector)
+  
+  Podemos controlar el umbral de deteccion de los pulsos, la escala de notas
+  el codigo de control (ejercicio para el lector).
+  
+  pagina del proyecto original (pasen a dar las gracias): MIDIsprout.com
+  github del proyecto original:
 
-//******************************
-//set scaled values, sorted array, first element scale length
-const int scaleCount = 5;
-const int scaleLen = 23; //maximum scale length plus 1 for 'used length'
-int currScale = 0; //current scale, default Chrom
+  playlist de spotify recomendada:
+-------------*/
+
+// libreria que nos permite enviar mensajes midi mediante USB 
+#include <MIDIUSB.h>
+
+// inicializacion de variables que controlan las notas
+const int scaleCount = 1; // Cantidad de escalas de notas a usar
+const int scaleLen = 23; // largo de la escala de notas usada + 1 
+int currScale = 0; // escala de notas definida por defecto
 int scale[scaleCount][scaleLen] = {
   {22, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22}, //Chromatic
-  {7, 1, 3, 5, 6, 8, 10, 12}, //Major
-  {7, 1, 3, 4, 6, 8, 9, 11}, //DiaMinor
-  {7, 1, 2, 2, 5, 6, 9, 11}, //Indian
-  {7, 1, 3, 4, 6, 8, 9, 11} //Minor
 };
 
-int root = 0; //initialize for root, pitch shifting
-//*******************************
+int root = 0; //inicializar la raiz de las notas,cambiar para mover el pitch
 
-const byte interruptPin = INT0; //galvanometer input
-const byte knobPin = A0; //knob analog input
-const byte buttonPin = A1; //tact button input
-int menus = 5; //number of main menus
-int mode = 0; //0 = Threshold, 1 = Scale, 2 = Brightness
-int currMenu = 0;
-int pulseRate = 350; //base pulse rate
+// Inicializacion de variables que controlan el comportamiento 
+// de la deteccion de pulsos
+const byte interruptPin = INT0; //pin de interrupcion utilizado (D3 en pro micro)
+int pulseRate = 350; //frecuencia base de deteccion de pulsos
 
-const byte samplesize = 15; //set sample array siz
-const byte analysize = samplesize - 1;  //trim for analysis array
+const byte samplesize = 15; //configurar cantidad de muestras guardadas
+const byte analysize = samplesize - 1;  // corte para el analisis
 
-const byte polyphony = 5; //above 8 notes may run out of ram
-int channel = 1;  //setting channel to 11 or 12 often helps simply computer midi routing setups
-int noteMin = 36; //C2  - keyboard note minimum
-int noteMax = 96; //C7  - keyboard note maximum
-byte QY8 = 0; //sends each note out chan 1-4, for use with General MIDI like Yamaha QY8 sequencer
-byte controlNumber = 80; //set to mappable control, low values may interfere with other soft synth controls!!
-byte controlVoltage = 1; //output PWM CV on controlLED, pin 17, PB3, digital 11 *lowpass filter
-long batteryLimit = 3000; //voltage check minimum, 3.0~2.7V under load; causes lightshow to turn off (save power)
-byte checkBat = 1;
+const byte polyphony = 5; //polifonia (cuantas notas suenan al mismo tiempo)
+int channel = 1;  // canal midi a utilizar
+int noteMin = 36; //C2  - nota minima a emitir
+int noteMax = 96; //C7  - nota maxima a emitir
+byte QY8 = 0; //activa o desactiva el modo QY8 que envia MIDI al azar en 4 canales
+byte controlNumber = 80; //Numero de control MIDI 
+byte controlVoltage = 1; // (pendiente traduccion y  verificacion) output PWM CV on controlLED, pin 17, PB3, digital 11 *lowpass filter
 
 byte timeout = 0;
 int value = 0;
 int prevValue = 0;
 
-volatile unsigned long microseconds; //sampling timer
+volatile unsigned long microseconds; //timer de muestreo
 volatile byte index = 0;
 volatile unsigned long samples[samplesize];
 
-float threshold = 1.7;   //change threshold multiplier
+float threshold = 1.7;   //cambiar el multiplicador del umbral
 
 
 unsigned long previousMillis = 0;
 unsigned long currentMillis = 1;
-unsigned long batteryCheck = 0; //battery check delay timer
-unsigned long menuTimeout = 5000; //5 seconds timeout in menu mode
 
-typedef struct _MIDImessage { //build structure for Note and Control MIDImessages
+// Estructura basica del mensaje MIDI para notas y control
+typedef struct _MIDImessage { 
   unsigned int type;
   int value;
   int velocity;
@@ -73,62 +70,62 @@ typedef struct _MIDImessage { //build structure for Note and Control MIDImessage
 }
 
 MIDImessage;
-MIDImessage noteArray[polyphony]; //manage MIDImessage data as an array with size polyphony
+MIDImessage noteArray[polyphony]; //para poder manejar los mensajes midi en un array
 int noteIndex = 0;
-MIDImessage controlMessage; //manage MIDImessage data for Control Message (CV out)
+MIDImessage controlMessage; //para poder manejar los mensajes de control
 
-
+// configuracion previa al programa principal
 void setup()
 {
-  randomSeed(analogRead(0)); //seed for QY8 4 channel mode
-  //Serial.begin(31250);  //initialize at MIDI rate
-  // Serial.begin(57600); //for debugging
+  randomSeed(analogRead(0)); //semilla aleatorea para el modo QY4 (emision aleatorea en 4 canales)
+  //  Serial.begin(31250);  //Baudios para emision midi por serial
+  //  Serial.begin(57600);  //Baudios para debugging
   //  while (!Serial) ;
   //  delay(500);
   //  Serial.println("waiting to start up...");
   //  delay(500);
   //  Serial.println("starting up...");
 
-  controlMessage.value = 0;  //begin CV at 0
-  //MIDIpanic(); //dont panic, unless you are sure it is nessisary
-  attachInterrupt(interruptPin, sample, RISING);  //begin sampling from interrupt
+  controlMessage.value = 0;  //comenzar CV en 0
+  //MIDIpanic(); // activar solo de ser necesario
+  attachInterrupt(interruptPin, sample, RISING);  //comenzar muestreo del pin de interrupcion
 }
 
+// bloque principal del programa
 void loop()
 {
-  currentMillis = millis();   //manage time
+  currentMillis = millis();   // actualizar contador del tiempo
   if (index >= samplesize)  {
-    analyzeSample();  //if samples array full, also checked in analyzeSample(), call sample analysis
+    analyzeSample();  //si el arreglo de muestreo esta lleno, algo que tambien se revisa en analyzeSample(), analizar el muestreo
   }
-  checkNote();  //turn off expired notes
-  checkControl();  //update control value
+  checkNote();  //apagar notas que expiraron
+  checkControl();  //actualizar el volumen de control
 }
 
-//interrupt timing sample array
+//muestreo en el pin de interrupcion
 void sample()
 {
   if (index < samplesize) {
     samples[index] = micros() - microseconds;
-    microseconds = samples[index] + microseconds; //rebuild micros() value w/o recalling
-    //micros() is very slow
-    //try a higher precision counter
+    microseconds = samples[index] + microseconds; //reconstruir valor de micros sin llamar la funcion
+    //micros() es muy lento
+    //prueba un contador mas preciso
     //samples[index] = ((timer0_overflow_count << 8) + TCNT0) - microseconds;
     index += 1;
   }
 }
 
-
+// analizar la muestra obtenida
 void analyzeSample()
 {
-  //eating up memory, one long at a time!
   unsigned long averg = 0;
   unsigned long maxim = 0;
   unsigned long minim = 100000;
   float stdevi = 0;
   unsigned long delta = 0;
   byte change = 0;
-
-  if (index == samplesize) { //array is full
+  // chequea si el arreglo de muestreo esta lleno
+  if (index == samplesize) {
     unsigned long sampanalysis[analysize];
     for (byte i = 0; i < analysize; i++) {
       //skip first element in the array
