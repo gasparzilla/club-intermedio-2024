@@ -5,10 +5,10 @@
   Este sensor consiste de un temporizador 555 configurado como un multivibrador aestable y dos electrodos
   (incluir link de explicacion)
   El muestreo del ancho de pulso emitido y la identificacion de sus 
-  fluctuaciones, nos permite generar notas y mensajes de control (ejercicio para el lector)
+  fluctuaciones, nos permite generar notas y mensajes de control.
   
   Podemos controlar el umbral de deteccion de los pulsos, la escala de notas
-  el codigo de control (ejercicio para el lector).
+  el codigo de control.
   
   pagina del proyecto original (pasen a dar las gracias):
   	MIDIsprout.com
