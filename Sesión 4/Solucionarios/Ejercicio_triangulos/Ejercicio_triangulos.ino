@@ -31,13 +31,17 @@ void loop() {
 
   Serial.println("Ingrese lado c: ");
   //Este while true es para que sólo pregunte una vez y se quede esperando el input
-  while (true) {
+ while (true) {
     if (Serial.available()) {
       //Se lee la entrada como un string, eso facilita las cosas
       String input = Serial.readStringUntil('\n');
       //Se transforma el string a float
       c = input.toFloat();
-      //Se revisa si el triangulo es válido
+      break;
+    }
+  }
+  
+    while (true){
       if (((a < (b + c)) and (b < (a + c)) and (c < (a + b))) == true) {
         es_valido = true;
       } else {
