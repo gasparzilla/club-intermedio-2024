@@ -11,7 +11,7 @@ Este es el repositorio del club de robótica de nivelación para el primer semes
 Los solucionarios se encuentran dentro de este repositorio ordenados por sesión.
 
 ## Archivos de construcción
-En caso de ser necesario, dentro de la carpeta KiCad, se encuentran los proyectos originales de los proyectos utilizados en el semestre. Estos contienen los esquemáticos de los circuitos y el diseño de la pcb. También se pueden encontrar los archivos 3D necesarios.
+En caso de ser necesario, dentro de la carpeta KiCad, se encuentran los proyectos originales de los circuitos utilizados en el semestre. Estos contienen los esquemáticos y el diseño de la pcb. También se pueden encontrar los archivos 3D necesarios.
 
 ## Errores y sugerencias
 En caso de que se encuentren errores de contenido y/o cualquier otro problema relacionado a las sesiones, por favor añadirlo como una Issue al repositorio, de esta manera se queda registro de los cambios realizados historicamente para futuras referencias en un único lugar.
